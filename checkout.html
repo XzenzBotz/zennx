@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - ZennxStore</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Oswald:wght@700&family=Pacifico&display=swap');
+    body {
+      margin: 0;
+      font-family: 'Kanit', sans-serif;
+      background: url('https://images.unsplash.com/photo-1533134486753-c833f0ed4866?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    h1 {
+      font-family: 'Oswald', sans-serif;
+      text-align: center;
+      color: #ffc107;
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #ffc107;
+      padding-bottom: 0.5rem;
+    }
+    /* Ringkasan Pesanan */
+    .order-summary ul {
+      list-style: none;
+      padding: 0;
+    }
+    .order-summary li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .order-summary .total {
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: right;
+      margin-top: 1rem;
+      color: #ffc107;
+    }
+    /* Form Input */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      box-sizing: border-box;
+      font-size: 1rem;
+      font-family: 'Kanit', sans-serif;
+    }
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    /* Opsi Pembayaran */
+    .payment-options .option {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .payment-options .option.selected {
+      background: rgba(255, 193, 7, 0.2);
+      border-color: #ffc107;
+    }
+    .payment-details {
+      display: none;
+      padding: 1rem;
+      margin-top: 10px;
+      background: #222;
+      border-radius: 8px;
+    }
+    .payment-details p { margin: 0 0 10px 0; }
+    .payment-details strong { color: #ffc107; }
+    #upload-section { margin-top: 10px; }
+    input[type="file"] { color: #ccc; }
+
+    /* Tombol */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #121212;
+      background: linear-gradient(45deg, #ffc107, #ff9800);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit:hover {
+      box-shadow: 0 4px 20px rgba(255, 193, 7, 0.4);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-shopping-cart"></i> Detail Checkout</h1>
+
+    <!-- Ringkasan Pesanan -->
+    <div class="order-summary">
+      <h2 class="section-title">Ringkasan Pesanan</h2>
+      <ul id="cart-items-summary">
+        <!-- Item akan dimuat oleh JS -->
+      </ul>
+      <div class="total" id="cart-total-summary">Total: Rp 0</div>
+    </div>
+
+    <!-- Form Data Diri dan Pembayaran -->
+    <form id="checkout-form" onsubmit="processOrder(event)">
+      <h2 class="section-title" style="margin-top: 2rem;">Data Penerima</h2>
+      <div class="form-group">
+        <label for="fullName">Nama Lengkap</label>
+        <input type="text" id="fullName" placeholder="Masukkan nama lengkap Anda" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">No. HP Aktif (WhatsApp)</label>
+        <input type="tel" id="phone" placeholder="Contoh: 081234567890" required>
+      </div>
+       <div class="form-group">
+        <label for="address">Alamat Lengkap</label>
+        <textarea id="address" placeholder="Contoh: Jl. Merdeka No. 10, RT 01/RW 02, Kel. Suka Maju, Kec. Jaya Baru, Kota Bahagia, 12345" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="landmark">Patokan (Opsional)</label>
+        <input type="text" id="landmark" placeholder="Contoh: Sebelah minimarket, rumah cat biru">
+      </div>
+
+
+      <h2 class="section-title" style="margin-top: 2rem;">Metode Pembayaran</h2>
+      <div class="payment-options">
+        <div class="option" id="opt-cod" onclick="selectPayment('cod')"><input type="radio" name="payment" value="cod" id="radio-cod" hidden><strong><i class="fas fa-hand-holding-usd"></i> COD (Bayar di Tempat)</strong></div>
+        <div class="option" id="opt-dana" onclick="selectPayment('dana')"><input type="radio" name="payment" value="dana" id="radio-dana" hidden><strong><i class="fas fa-wallet"></i> DANA</strong></div>
+        <div class="option" id="opt-gopay" onclick="selectPayment('gopay')"><input type="radio" name="payment" value="gopay" id="radio-gopay" hidden><strong><i class="fas fa-wallet"></i> GoPay</strong></div>
+        <div class="option" id="opt-shopeepay" onclick="selectPayment('shopeepay')"><input type="radio" name="payment" value="shopeepay" id="radio-shopeepay" hidden><strong><i class="fas fa-wallet"></i> ShopeePay</strong></div>
+        <div class="payment-details" id="payment-details-ewallet">
+          <p>Silakan transfer ke nomor berikut:</p>
+          <p id="payment-number" style="font-size: 1.2rem; font-weight: bold; text-align: center;"></p>
+          <p>Total yang harus dibayar: <strong id="total-to-pay">Rp 0</strong></p>
+          <div id="upload-section"><label for="proof">Upload Bukti Transfer (Opsional)</label><input type="file" id="proof" accept="image/*"><small style="display: block; margin-top: 5px; color: #ccc;">Anda akan diminta mengirim bukti transfer via WhatsApp setelah menekan tombol pesan.</small></div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit"><i class="fab fa-whatsapp"></i> Kirim Pesanan via WhatsApp</button>
+    </form>
+  </div>
+
+  <script>
+    const CART_STORAGE_KEY = 'zennx_cart';
+    let cart = [];
+    let selectedPaymentMethod = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+      const summaryList = document.getElementById('cart-items-summary');
+      const totalElement = document.getElementById('cart-total-summary');
+      const totalToPay = document.getElementById('total-to-pay');
+
+      if (cart.length === 0) {
+        summaryList.innerHTML = '<li>Keranjang belanja Anda kosong. <a href="index.html" style="color: #ffc107;">Kembali ke toko</a>.</li>';
+        document.getElementById('checkout-form').style.display = 'none';
+        return;
+      }
+
+      let currentTotal = 0;
+      summaryList.innerHTML = '';
+      cart.forEach(item => {
+        summaryList.innerHTML += `<li><span>${item.name}</span> <span>Rp ${item.price.toLocaleString('id-ID')}</span></li>`;
+        currentTotal += item.price;
+      });
+
+      const formattedTotal = `Total: Rp ${currentTotal.toLocaleString('id-ID')}`;
+      totalElement.textContent = formattedTotal;
+      totalToPay.textContent = `Rp ${currentTotal.toLocaleString('id-ID')}`;
+    });
+
+    function selectPayment(method) {
+        selectedPaymentMethod = method;
+        const paymentDetailsEwallet = document.getElementById('payment-details-ewallet');
+        const paymentNumberEl = document.getElementById('payment-number');
+        document.querySelectorAll('.payment-options .option').forEach(el => el.classList.remove('selected'));
+        paymentDetailsEwallet.style.display = 'none';
+        if (method === 'cod') {
+            document.getElementById('opt-cod').classList.add('selected');
+        } else {
+            document.getElementById(`opt-${method}`).classList.add('selected');
+            paymentDetailsEwallet.style.display = 'block';
+            let paymentTarget = '';
+            if (method === 'dana') paymentTarget = 'DANA: 0895609803131';
+            if (method === 'gopay') paymentTarget = 'GoPay: 083834811540';
+            if (method === 'shopeepay') paymentTarget = 'ShopeePay: 0895321321745';
+            paymentNumberEl.textContent = paymentTarget;
+        }
+    }
+
+    function processOrder(event) {
+      event.preventDefault();
+      const fullName = document.getElementById('fullName').value;
+      const phone = document.getElementById('phone').value;
+      const address = document.getElementById('address').value;
+      const landmark = document.getElementById('landmark').value;
+
+      if (!fullName || !phone || !address) {
+        alert('Nama, No. HP, dan Alamat Lengkap harus diisi!');
+        return;
+      }
+      if (!selectedPaymentMethod) {
+        alert('Silakan pilih metode pembayaran terlebih dahulu.');
+        return;
+      }
+
+      const adminNumber = '62895321321745'; 
+      
+      let itemsText = cart.map(item => `- ${item.name} (Rp ${item.price.toLocaleString('id-ID')})`).join('\n');
+      let total = cart.reduce((sum, item) => sum + item.price, 0);
+
+      let message = `*--- Pesanan Baru ZennxStore ---*\n\n`;
+      message += `*Nama:* ${fullName}\n`;
+      message += `*No. HP:* ${phone}\n`;
+      message += `*Alamat:* ${address}\n`;
+      if (landmark) {
+        message += `*Patokan:* ${landmark}\n`;
+      }
+      message += `\n*Item yang Dipesan:*\n${itemsText}\n\n`;
+      message += `*Total Pembayaran:* Rp ${total.toLocaleString('id-ID')}\n`;
+      message += `*Metode Pembayaran:* ${selectedPaymentMethod.toUpperCase()}\n\n`;
+      message += `Terima kasih! Saya akan menunggu konfirmasi selanjutnya.`;
+      
+      if (selectedPaymentMethod !== 'cod') {
+          message += `\n\n_(Saya akan segera mengirimkan bukti transfer di chat ini)_`;
+      }
+
+      localStorage.removeItem(CART_STORAGE_KEY);
+      
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${adminNumber}&text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      
+      alert('Anda akan diarahkan ke WhatsApp untuk mengirim pesanan. Keranjang Anda telah dikosongkan.');
+      
+      setTimeout(() => {
+          window.location.href = 'sukses.html';
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

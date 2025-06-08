@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesanan Berhasil! - ZennxStore</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap');
+    body { margin: 0; padding: 0; font-family: 'Kanit', sans-serif; background-color: #121212; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; position: relative; }
+    .success-container { text-align: center; color: #fff; z-index: 10; opacity: 0; transform: scale(0.8); animation: containerFadeIn 1s ease-out 0.5s forwards; }
+    @keyframes containerFadeIn { to { opacity: 1; transform: scale(1); } }
+    .checkmark-svg { width: 120px; height: 120px; margin-bottom: 20px; }
+    .checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 3; stroke: #4CAF50; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+    .checkmark__check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; stroke-width: 4; stroke: #4CAF50; fill: none; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; opacity: 0; transform: translateY(20px); animation: textFadeUp 0.8s ease-out 1.2s forwards; }
+    p { font-size: 1.1rem; color: #ccc; max-width: 400px; margin: 0 auto 30px auto; opacity: 0; transform: translateY(20px); animation: textFadeUp 0.8s ease-out 1.5s forwards; }
+    @keyframes textFadeUp { to { opacity: 1; transform: translateY(0); } }
+    .home-button { display: inline-block; padding: 12px 30px; background: linear-gradient(45deg, #ffc107, #ff9800); color: #121212; text-decoration: none; font-weight: bold; border-radius: 50px; transition: transform 0.3s, box-shadow 0.3s; opacity: 0; transform: scale(0.8); animation: buttonFadeIn 0.8s ease-out 2s forwards; }
+    .home-button:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255, 193, 7, 0.4); }
+    @keyframes buttonFadeIn { to { opacity: 1; transform: scale(1); } }
+    .confetti { position: absolute; width: 10px; height: 20px; background-color: #f00; top: -50px; opacity: 1; animation: fall linear 4s infinite; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div class="confetti-container" id="confetti-container"></div>
+  <div class="success-container">
+    <svg class="checkmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+      <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+    <h1>Pesanan Berhasil!</h1>
+    <p>Terima kasih telah berbelanja. Admin akan segera memproses pesanan Anda via WhatsApp.</p>
+    <a href="index.html" class="home-button">Kembali ke Toko</a>
+  </div>
+  <script>
+    const confettiContainer = document.getElementById('confetti-container');
+    const confettiCount = 100;
+    const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800'];
+    for (let i = 0; i < confettiCount; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 4 + 's';
+      confetti.style.animationDuration = 2 + Math.random() * 2 + 's';
+      confetti.style.transform = `scale(${Math.random() * 0.5 + 0.5}) rotate(${Math.random() * 360}deg)`;
+      confettiContainer.appendChild(confetti);
+    }
+    
+    // Redirect otomatis setelah animasi selesai
+    setTimeout(() => {
+      // Create a more robust relative path
+      const newPath = window.location.pathname.replace('sukses.html', 'index.html');
+      window.location.href = newPath;
+    }, 7000);
+  </script>
+</body>
+</html>
